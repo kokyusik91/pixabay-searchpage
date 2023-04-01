@@ -17,59 +17,44 @@ const Container = styled.div`
 
 function App() {
     const [data, setData] = useState({});
-    const [latestKeywordList, setLatestKeywordList] = useState([]);
     const [query, setQuery] = useState('');
+    const [filters, setFilters] = useState({
+        orientation: 'all',
+        order: 'popular',
+        per_page: '20',
+    });
+
+    const [pages, setPages] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const { order, orientation, per_page } = filters;
 
     useEffect(() => {
         const fetch = async () => {
             const result = await getWallPapers({
                 q: query,
+                orientation,
+                order,
+                per_page,
+                page: currentPage,
             });
             setData(result);
+            setPages(Math.floor(result.totalHits / filters.per_page));
         };
         fetch();
-    }, [query]);
-
-    // const fetchImages = async (text) => {
-    //     const result = await request(
-    //         `https://pixabay.com/api/?key=${
-    //             process.env.REACT_APP_PIXABAY
-    //         }&q=${encodeURIComponent(text)}`
-    //     );
-    //     setImages(result);
-    // };
-
-    // 최초 한번 이미지 가져오기
-    // useEffect(() => {
-    //     fetchImages('');
-    // }, []);
-
-    // const handleSearchImages = async (e) => {
-    //     if (e.code === 'Enter') {
-    //         await fetchImages(inputRef.current.value);
-    //         setLatestKeywordList((prev) => {
-    //             return [...prev, inputRef.current.value];
-    //         });
-    //     }
-    //     // inputRef.current.value = '';
-    // };
-
-    // useEffect(() => {
-    //     window.addEventListener('keydown', handleSearchImages);
-
-    //     return () => {
-    //         window.removeEventListener('keydown', handleSearchImages);
-    //     };
-    // }, []);
+    }, [query, filters, currentPage]);
 
     return (
         <>
             <Container>
-                <Hero
-                    latestKeywordList={latestKeywordList}
-                    setQuery={setQuery}
+                <Hero setQuery={setQuery} setFilters={setFilters} />
+                <ResultContainer
+                    data={data}
+                    pages={pages}
+                    setPages={setPages}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
                 />
-                <ResultContainer data={data} />
                 <Footer />
                 <ToggleThemeButton />
             </Container>
