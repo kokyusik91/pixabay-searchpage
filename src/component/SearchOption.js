@@ -24,13 +24,21 @@ const SearchOptionLabel = styled.p`
     border-radius: 16px;
 `;
 
-const SearchOption = () => {
+const SearchOption = ({ setFilters }) => {
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFilters((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
     return (
         <SearchOptionContainer>
             <SearchOptionUl>
                 <SearchOptionLi>
                     <SearchOptionLabel>정렬</SearchOptionLabel>
-                    <form id="order">
+                    <form id="order" onChange={handleChange}>
                         <input
                             type="radio"
                             name="order"
@@ -43,18 +51,20 @@ const SearchOption = () => {
                             name="order"
                             id="popular"
                             value="popular"
+                            defaultChecked
                         />
                         <label htmlFor="popular">인기순</label>
                     </form>
                 </SearchOptionLi>
                 <SearchOptionLi>
                     <SearchOptionLabel>사진 방향</SearchOptionLabel>
-                    <form id="orientation">
+                    <form id="orientation" onChange={handleChange}>
                         <input
                             type="radio"
                             name="orientation"
                             id="all"
                             value="all"
+                            defaultChecked
                         />
                         <label htmlFor="all">모두</label>
                         <input
@@ -75,7 +85,7 @@ const SearchOption = () => {
                 </SearchOptionLi>
                 <SearchOptionLi>
                     <SearchOptionLabel>페이지 당 갯수</SearchOptionLabel>
-                    <form id="per_page">
+                    <form id="per_page" onChange={handleChange}>
                         <input
                             type="radio"
                             name="per_page"
@@ -88,6 +98,7 @@ const SearchOption = () => {
                             name="per_page"
                             id="20"
                             value={20}
+                            defaultChecked
                         />
                         <label htmlFor="20">20</label>
                         <input
@@ -96,7 +107,7 @@ const SearchOption = () => {
                             id="30"
                             value={30}
                         />
-                        <label htmlFor="10">30</label>
+                        <label htmlFor="30">30</label>
                     </form>
                 </SearchOptionLi>
             </SearchOptionUl>

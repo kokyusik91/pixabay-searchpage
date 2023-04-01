@@ -23,11 +23,11 @@ const TagLabel = styled.span`
     }
 `;
 
-const SearchTag = ({ text }) => {
+const SearchTag = ({ item, handleClickSearch, handleDelete }) => {
     return (
-        <Tag>
-            <TagLabel>{text}</TagLabel>
-            <DeleteIcon width="12px" />
+        <Tag onClick={handleClickSearch}>
+            <TagLabel>{item}</TagLabel>
+            <DeleteIcon width="12px" onClick={handleDelete} />
         </Tag>
     );
 };

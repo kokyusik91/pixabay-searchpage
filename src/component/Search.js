@@ -1,4 +1,4 @@
-import { forwardRef, useState, useRef } from 'react';
+import { forwardRef, useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as SearchIcon } from '../asset/search.svg';
 import SearchTag from './SearchTag';
@@ -46,8 +46,16 @@ const SearchOptionButton = styled.p`
     color: #5e5e5e;
 `;
 
-const Search = ({ latestKeywordList, setQuery }) => {
+const Search = ({ setQuery, setFilters }) => {
+    const searchTagsFromLocalStorage = JSON.parse(
+        localStorage.getItem('searchTags')
+    );
+    const initialSearchTag = searchTagsFromLocalStorage
+        ? searchTagsFromLocalStorage
+        : [];
     const [searchOption, setSearchOption] = useState(false);
+    const [searchList, setSearchList] = useState(initialSearchTag);
+
     const inputRef = useRef('');
 
     const toggleSearchOption = () => {
@@ -56,10 +64,28 @@ const Search = ({ latestKeywordList, setQuery }) => {
 
     const onSearch = (e) => {
         if (e.code === 'Enter') {
-            setQuery(e.target.value);
+            const currentValue = e.target.value;
+            setQuery(currentValue);
+
             inputRef.current.value = '';
+            setSearchList((prev) => [...prev, currentValue]);
         }
     };
+
+    const handleClickSearch = (tag) => {
+        setQuery(tag);
+        inputRef.current.value = tag;
+    };
+
+    const handleDelete = (id) => {
+        const newSearchTag = [...searchList];
+        newSearchTag.splice(id, 1);
+        setSearchList(newSearchTag);
+    };
+
+    useEffect(() => {
+        localStorage.setItem('searchTags', JSON.stringify(searchList));
+    }, [searchList]);
 
     return (
         <>
@@ -75,11 +101,19 @@ const Search = ({ latestKeywordList, setQuery }) => {
                         검색 옵션 {searchOption ? '닫기' : '열기'}
                     </SearchOptionButton>
                 </SearchInputContainer>
-                {searchOption && <SearchOption />}
+                {searchOption && <SearchOption setFilters={setFilters} />}
             </SearchBoxContainer>
             <SearchTagContainer>
-                {latestKeywordList.map((item) => (
+                {/* {latestKeywordList.map((item) => (
                     <SearchTag key={item} text={item} />
+                ))} */}
+                {searchList?.map((item, idx) => (
+                    <SearchTag
+                        item={item}
+                        key={item + idx}
+                        handleClickSearch={() => handleClickSearch(item)}
+                        handleDelete={() => handleDelete(idx)}
+                    />
                 ))}
             </SearchTagContainer>
         </>
@@ -87,3 +121,9 @@ const Search = ({ latestKeywordList, setQuery }) => {
 };
 
 export default Search;
+
+// 검색어을 입력하고 엔터를 친다
+// 최근 검색어 태그가 노출된다.
+
+// 최근 검색어를 관리하는 배열이 있어야한다.
+// 근데 map을 뿌릴때, key가 중복되면 안되는건 어떻게 해결해야할까? idx로 가자

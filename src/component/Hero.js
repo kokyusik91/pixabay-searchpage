@@ -37,7 +37,7 @@ const Content = styled.div`
     padding: 120px 32px 16px 32px;
 `;
 
-const Hero = ({ latestKeywordList, setQuery }) => {
+const Hero = ({ setQuery, setSearchList, setFilters, filters }) => {
     return (
         <Container>
             <Content>
@@ -46,8 +46,10 @@ const Hero = ({ latestKeywordList, setQuery }) => {
                 </HeroTitle>
                 <HeroSubtitle>오늘 나의 배경화면은? 👀</HeroSubtitle>
                 <Search
-                    latestKeywordList={latestKeywordList}
                     setQuery={setQuery}
+                    setSearchList={setSearchList}
+                    setFilters={setFilters}
+                    filters={filters}
                 />
             </Content>
         </Container>
