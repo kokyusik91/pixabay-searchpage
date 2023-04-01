@@ -37,7 +37,7 @@ const Content = styled.div`
     padding: 120px 32px 16px 32px;
 `;
 
-const Hero = forwardRef(({ keyword, setKeyWord }, ref) => {
+const Hero = ({ latestKeywordList, setQuery }) => {
     return (
         <Container>
             <Content>
@@ -45,10 +45,13 @@ const Hero = forwardRef(({ keyword, setKeyWord }, ref) => {
                     <HeroTitleLink href="./">배경화면 검색 엔진</HeroTitleLink>
                 </HeroTitle>
                 <HeroSubtitle>오늘 나의 배경화면은? 👀</HeroSubtitle>
-                <Search keyword={keyword} setKeyWord={setKeyWord} ref={ref} />
+                <Search
+                    latestKeywordList={latestKeywordList}
+                    setQuery={setQuery}
+                />
             </Content>
         </Container>
     );
-});
+};
 
 export default Hero;

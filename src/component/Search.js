@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react';
+import { forwardRef, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { ReactComponent as SearchIcon } from '../asset/search.svg';
 import SearchTag from './SearchTag';
@@ -46,11 +46,19 @@ const SearchOptionButton = styled.p`
     color: #5e5e5e;
 `;
 
-const Search = forwardRef(({}, ref) => {
+const Search = ({ latestKeywordList, setQuery }) => {
     const [searchOption, setSearchOption] = useState(false);
+    const inputRef = useRef('');
 
     const toggleSearchOption = () => {
         setSearchOption((prev) => !prev);
+    };
+
+    const onSearch = (e) => {
+        if (e.code === 'Enter') {
+            setQuery(e.target.value);
+            inputRef.current.value = '';
+        }
     };
 
     return (
@@ -58,7 +66,11 @@ const Search = forwardRef(({}, ref) => {
             <SearchBoxContainer>
                 <SearchInputContainer>
                     <SearchIcon width="24" fill="#5e5e5e" />
-                    <SearchInput placeholder="검색어 입력 후 ENTER" ref={ref} />
+                    <SearchInput
+                        placeholder="검색어 입력 후 ENTER"
+                        onKeyDown={onSearch}
+                        ref={inputRef}
+                    />
                     <SearchOptionButton onClick={toggleSearchOption}>
                         검색 옵션 {searchOption ? '닫기' : '열기'}
                     </SearchOptionButton>
@@ -66,10 +78,12 @@ const Search = forwardRef(({}, ref) => {
                 {searchOption && <SearchOption />}
             </SearchBoxContainer>
             <SearchTagContainer>
-                <SearchTag />
+                {latestKeywordList.map((item) => (
+                    <SearchTag key={item} text={item} />
+                ))}
             </SearchTagContainer>
         </>
     );
-});
+};
 
 export default Search;

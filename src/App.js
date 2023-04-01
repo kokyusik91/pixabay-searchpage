@@ -4,9 +4,10 @@ import Hero from './component/Hero';
 import ResultContainer from './component/ResultContainer';
 import Footer from './component/Footer';
 import './App.css';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useId } from 'react';
 import { request } from './utils/utils';
 import EmptyResult from './component/EmptyResult';
+import getWallPapers from './utils/getWallPaper';
 
 const Container = styled.div`
     position: relative;
@@ -15,45 +16,60 @@ const Container = styled.div`
 `;
 
 function App() {
-    const [images, setImages] = useState({});
-    const inputRef = useRef(null);
+    const [data, setData] = useState({});
+    const [latestKeywordList, setLatestKeywordList] = useState([]);
+    const [query, setQuery] = useState('');
 
-    const fetchImages = async (text) => {
-        const result = await request(
-            `https://pixabay.com/api/?key=${
-                process.env.REACT_APP_PIXABAY
-            }&q=${encodeURIComponent(text)}`
-        );
-        setImages(result);
-    };
+    useEffect(() => {
+        const fetch = async () => {
+            const result = await getWallPapers({
+                q: query,
+            });
+            setData(result);
+        };
+        fetch();
+    }, [query]);
+
+    // const fetchImages = async (text) => {
+    //     const result = await request(
+    //         `https://pixabay.com/api/?key=${
+    //             process.env.REACT_APP_PIXABAY
+    //         }&q=${encodeURIComponent(text)}`
+    //     );
+    //     setImages(result);
+    // };
 
     // 최초 한번 이미지 가져오기
-    useEffect(() => {
-        fetchImages('');
-    }, []);
+    // useEffect(() => {
+    //     fetchImages('');
+    // }, []);
 
-    const handleSearchImages = async (e) => {
-        if (e.code === 'Enter') {
-            await fetchImages(inputRef.current.value);
-            inputRef.current.value = '';
-        }
-    };
+    // const handleSearchImages = async (e) => {
+    //     if (e.code === 'Enter') {
+    //         await fetchImages(inputRef.current.value);
+    //         setLatestKeywordList((prev) => {
+    //             return [...prev, inputRef.current.value];
+    //         });
+    //     }
+    //     // inputRef.current.value = '';
+    // };
 
-    useEffect(() => {
-        window.addEventListener('keydown', handleSearchImages);
+    // useEffect(() => {
+    //     window.addEventListener('keydown', handleSearchImages);
 
-        return () => window.removeEventListener('keydown', handleSearchImages);
-    }, []);
+    //     return () => {
+    //         window.removeEventListener('keydown', handleSearchImages);
+    //     };
+    // }, []);
 
     return (
         <>
             <Container>
-                <Hero ref={inputRef} />
-                {images && images.hits.length !== 0 ? (
-                    <ResultContainer images={images} />
-                ) : (
-                    <EmptyResult />
-                )}
+                <Hero
+                    latestKeywordList={latestKeywordList}
+                    setQuery={setQuery}
+                />
+                <ResultContainer data={data} />
                 <Footer />
                 <ToggleThemeButton />
             </Container>
