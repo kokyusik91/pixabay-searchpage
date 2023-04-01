@@ -25,11 +25,11 @@ const PageSelect = styled.select`
     }
 `;
 
-const Pagination = ({ pages, setCurrentPage, currentPage }) => {
-    const grid = Array(1 * pages)
+const Pagination = ({ setCurrentPage, currentPage, numberOfPages }) => {
+    const grid = Array(numberOfPages)
         .fill()
         .map((arr, i) => parseInt(i + 1));
-    console.log('currentPage', currentPage);
+
     const handleClickPrevPage = () => {
         setCurrentPage((prev) => prev - 1);
     };
@@ -44,15 +44,15 @@ const Pagination = ({ pages, setCurrentPage, currentPage }) => {
 
     return (
         <Nav>
-            {currentPage > 1 ? (
+            {currentPage > 1 && (
                 <PrevIcon
                     width="24"
                     cursor="pointer"
                     fill="var(--text)"
                     onClick={handleClickPrevPage}
                 />
-            ) : null}
-            {`총 ${pages} 중 `}
+            )}
+            {`총 ${numberOfPages} 중 `}
             <PageSelect
                 name="page"
                 onChange={handleChangeSelect}
@@ -65,14 +65,14 @@ const Pagination = ({ pages, setCurrentPage, currentPage }) => {
                 ))}
             </PageSelect>
             페이지
-            {currentPage < pages ? (
+            {currentPage < numberOfPages && (
                 <NextIcon
                     width="24"
                     cursor="pointer"
                     fill="var(--text)"
                     onClick={handleClickNextPage}
                 />
-            ) : null}
+            )}
         </Nav>
     );
 };

@@ -24,8 +24,11 @@ function App() {
         per_page: '20',
     });
 
-    const [pages, setPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+    // 따로 state를 파지말고, 변수로 선언해서 사용하면 된다.
+    const numberOfPages = data.totalHits
+        ? Math.ceil(data.totalHits / filters.per_page)
+        : 0;
 
     const { order, orientation, per_page } = filters;
 
@@ -39,7 +42,6 @@ function App() {
                 page: currentPage,
             });
             setData(result);
-            setPages(Math.floor(result.totalHits / filters.per_page));
         };
         fetch();
     }, [query, filters, currentPage]);
@@ -50,10 +52,9 @@ function App() {
                 <Hero setQuery={setQuery} setFilters={setFilters} />
                 <ResultContainer
                     data={data}
-                    pages={pages}
-                    setPages={setPages}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
+                    numberOfPages={numberOfPages}
                 />
                 <Footer />
                 <ToggleThemeButton />
