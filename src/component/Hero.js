@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Search from './Search';
+import Search from './search/Search';
 import { forwardRef } from 'react';
 
 const Container = styled.div`
@@ -37,7 +37,7 @@ const Content = styled.div`
     padding: 120px 32px 16px 32px;
 `;
 
-const Hero = ({ setQuery, setSearchList, setFilters, filters }) => {
+const Hero = ({ setQuery, setFilters }) => {
     return (
         <Container>
             <Content>
@@ -45,12 +45,7 @@ const Hero = ({ setQuery, setSearchList, setFilters, filters }) => {
                     <HeroTitleLink href="./">배경화면 검색 엔진</HeroTitleLink>
                 </HeroTitle>
                 <HeroSubtitle>오늘 나의 배경화면은? 👀</HeroSubtitle>
-                <Search
-                    setQuery={setQuery}
-                    setSearchList={setSearchList}
-                    setFilters={setFilters}
-                    filters={filters}
-                />
+                <Search setQuery={setQuery} setFilters={setFilters} />
             </Content>
         </Container>
     );
